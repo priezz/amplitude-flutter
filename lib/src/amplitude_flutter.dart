@@ -7,6 +7,7 @@ import 'device_info.dart';
 import 'event.dart';
 import 'event_buffer.dart';
 import 'identify.dart';
+import 'location.dart';
 import 'revenue.dart';
 import 'service_provider.dart';
 import 'session.dart';
@@ -24,10 +25,11 @@ class AmplitudeFlutter {
   }
 
   Config config;
-  ServiceProvider provider;
   DeviceInfo deviceInfo;
-  Session session;
   EventBuffer buffer;
+  Location location;
+  ServiceProvider provider;
+  Session session;
   dynamic userId;
 
   /// Set the user id associated with events
@@ -51,6 +53,11 @@ class AmplitudeFlutter {
 
     if (userId != null) {
       event.addProp('user_id', userId);
+    }
+
+    if (location != null) {
+      final locInfo = await location.getLocation();
+      event.addProps(<String, dynamic>{'api_properties': locInfo});
     }
 
     return buffer.add(event);
@@ -98,6 +105,8 @@ class AmplitudeFlutter {
     deviceInfo = provider.deviceInfo;
     session = provider.session;
     buffer = EventBuffer(provider, config);
+
+    location = config.useLocation ? provider.getLocation() : null;
 
     session.start();
   }

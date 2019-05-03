@@ -2,6 +2,7 @@ import 'package:mockito/mockito.dart';
 
 import 'package:amplitude_flutter/src/client.dart';
 import 'package:amplitude_flutter/src/device_info.dart';
+import 'package:amplitude_flutter/src/location.dart';
 import 'package:amplitude_flutter/src/store.dart';
 import 'package:amplitude_flutter/src/session.dart';
 import 'package:amplitude_flutter/src/service_provider.dart';
@@ -11,6 +12,8 @@ import 'mock_store.dart';
 class MockDeviceInfo extends Mock implements DeviceInfo {}
 
 class MockSession extends Mock implements Session {}
+
+class MockLocation extends Mock implements Location {}
 
 class MockServiceProvider implements ServiceProvider {
   MockServiceProvider({this.client, this.store}) {
@@ -28,4 +31,9 @@ class MockServiceProvider implements ServiceProvider {
   Session session;
   @override
   DeviceInfo deviceInfo;
+  @override
+  Location location;
+
+  @override
+  Location getLocation() => location ??= MockLocation();
 }

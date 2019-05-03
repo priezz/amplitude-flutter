@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:amplitude_flutter/amplitude_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
 import 'user_id_form.dart';
 
@@ -20,6 +21,7 @@ class _MyAppState extends State<MyApp> {
   String apiKey;
   String _message = '';
   AmplitudeFlutter analytics;
+  Location location;
 
   @override
   void initState() {
@@ -95,6 +97,15 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> _requestLocationPermission() async {
+    location ??= Location();
+    final hasPermission = await location.requestPermission();
+
+    setState(() {
+      _message = hasPermission ? 'Granted.' : 'Denied.';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -130,6 +141,10 @@ class _MyAppState extends State<MyApp> {
               RaisedButton(
                 child: const Text('Flush Events'),
                 onPressed: _flushEvents,
+              ),
+              RaisedButton(
+                child: const Text('Request Location Permission'),
+                onPressed: _requestLocationPermission,
               ),
               Text(
                 _message,
